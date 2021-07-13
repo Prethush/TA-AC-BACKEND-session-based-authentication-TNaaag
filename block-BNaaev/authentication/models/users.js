@@ -13,6 +13,7 @@ let userSchema = new Schema({
 userSchema.pre('save', function(next) {
     if(this.passwd && this.isModified('passwd')) {
         bcrypt.hash(this.passwd, 12, (err, hashed) => {
+            if(err) return next(err);
             this.passwd = hashed;
             next();
         })
