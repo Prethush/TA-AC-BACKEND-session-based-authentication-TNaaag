@@ -31,17 +31,17 @@ router.get('/login', (req, res, next) => {
 router.post('/login', (req, res, next) => {
   let {email, passwd} = req.body;
   if(!passwd || !email) {
-    res.redirect('/users/login');
+    return res.redirect('/users/login');
   }
   User.findOne({email}, (err, user) => {
     if(err) return next(err);
     if(!user) {
-      res.redirect('/users/login');
+      return res.redirect('/users/login');
     }
     user.verifyPasswd(passwd, (err, result) => {
       if(err) return next(err);
       if(!result) {
-        res.redirect('/users/login');
+        return res.redirect('/users/login');
       }
       req.session.userId = user.id;
       res.redirect('/users');
