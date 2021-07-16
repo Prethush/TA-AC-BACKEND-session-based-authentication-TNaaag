@@ -11,46 +11,45 @@ router.get('/', function(req, res, next) {
 //render register page
 router.get('/register', (req, res, next) => {
   let error = req.flash('error')[0];
-  let alert = req.flash('alert')[0];
-  res.render('register', {error, alert});
+  
+  res.render('register', {error});
 });
 
 //handle register request
 router.post('/register', (req, res, next) => {
-  let {email, passwd} = req.body;
-  User.findOne({email}, (err, user) => {
-    if(err) return next(err);
-    if(user) {
-      req.flash("error", "Email is not unique");
-      return res.redirect('/users/register');
-    } 
-    if(passwd.length < 4) {
-      req.flash("alert", "Password length is less than 4");
-      return res.redirect('/users/register');
-    }
-    User.create(req.body, (err, user) => {
-      if(err) return next(err);
+  
+  User.create(req.body, (err, user) => {
+
+      if(err) {
+        if(err.name === 'MongoError') {
+          req.flash("error", "Email is already taken");
+          return res.redirect('/users/register');
+        } if(err.name === 'ValidationError') {
+          req.flash("error", "Password is less than 5 characters");
+          return res.redirect('/users/register');
+        }
+        return res.json({err});
+      }
       res.redirect('/users');
     })
   });
   
   
-});
+
 
 //render login page
 router.get('/login', (req, res, next) => {
   
   let error = req.flash('error')[0];
-  let alert = req.flash("alert")[0];
-  let info = req.flash("info")[0];
-  res.render('login', {error, alert, info});
+ 
+  res.render('login', {error});
 });
 
 //processing login request
 router.post('/login', (req, res, next) => {
   let {email, passwd} = req.body;
   if(!passwd || !email) {
-    req.flash('info', "Email/Password is not passed");
+    req.flash('error', "Email/Password is not passed");
     return res.redirect('/users/login');
   }
   User.findOne({email}, (err, user) => {
@@ -62,7 +61,7 @@ router.post('/login', (req, res, next) => {
     user.verifyPasswd(passwd, (err, result) => {
       if(err) return next(err);
       if(!result) {
-        req.flash("alert", "Invalid Password");
+        req.flash("error", "Invalid Password");
         return res.redirect('/users/login');
       }
       req.session.userId = user.id;

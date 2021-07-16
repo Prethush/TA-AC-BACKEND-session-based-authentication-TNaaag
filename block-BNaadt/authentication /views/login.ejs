@@ -10,13 +10,7 @@
     <% if(error) { %>
         <h1><%= error %></h1>
     <% } %>
-    <% if(alert) { %>
-        <h1><%= alert %></h1>
-    <% } %>
-    <% if(info) { %>
-        <h1><%= info %></h1>
-    <% } %>
-    <form action="/users/login" method="POST"> 
+       <form action="/users/login" method="POST"> 
         <input type="email" name="email" placeholder="Email">
         <input type="password" name="passwd" placeholder="Password">
         <input type="submit" value="Login">
