@@ -9,6 +9,7 @@ var commentsRouter = require('./routes/comments');
 var session = require('express-session');
 var flash = require('connect-flash');
 var MongoStore = require('connect-mongo');
+var homeRouter = require('./routes/home');
 
 require('dotenv').config();
 
@@ -46,6 +47,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/articles', articlesRouter);
 app.use('/comments', commentsRouter);
+app.use('/home', homeRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

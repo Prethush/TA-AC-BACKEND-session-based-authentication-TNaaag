@@ -45,7 +45,8 @@ router.post('/login', (req, res, next) => {
         return res.redirect('/users/login');
       }
       req.session.userId = user.id;
-      res.redirect('/articles');
+      req.flash("info", `Welcome ${user.getFullName(user.firstName, user.lastName)}`);
+      res.redirect('/home');
     })
   })
 });
