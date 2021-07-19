@@ -24,7 +24,6 @@ router.post('/register', (req, res, next) => {
 
 //render login page
 router.get('/login', (req, res, next) => {
-
   res.render('login');
 });
 
@@ -49,9 +48,14 @@ router.post("/login", (req, res, next) => {
       }
       req.session.userId = user.id;
       req.flash("info", `Welcome ${user.admin ? "admin" : "user"} `);
-      res.redirect('/users');
+      res.redirect(`/${user.admin ? "admin": "clients"}/products`);
     })
   })
 });
 
+//logout
+router.get('/logout', (req, res, next) => {
+  res.clearCookie('connect.sid');
+  res.redirect('/');
+});
 module.exports = router;

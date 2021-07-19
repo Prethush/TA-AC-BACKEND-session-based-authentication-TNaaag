@@ -9,7 +9,8 @@ let userSchema = new Schema({
     city:  String,
     admin: String,
     user: String,
-    passwd: {type: String, required: true, minlength: 5}
+    passwd: {type: String, required: true, minlength: 5},
+    cart: [{type: Schema.Types.ObjectId, ref: "Product"}]
 }, {timestamps: true});
 
 userSchema.pre('save', function(next) {

@@ -8,6 +8,7 @@ var session = require('express-session');
 var flash = require('connect-flash');
 var MongoStore = require('connect-mongo');
 var adminRouter = require('./routes/admin');
+var clientRouter = require('./routes/clients');
 
 require('dotenv').config();
 
@@ -37,13 +38,20 @@ app.use(session({
   saveUninitialized: false,
   store: MongoStore.create({
     mongoUrl: "mongodb://127.0.0.1:27017/ecommerce"
-  })
+  }),
+  cookie: {maxAge: 180 * 60 * 1000}
 }));
 
 app.use(flash());
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/admin', adminRouter);
+app.use('/clients', clientRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
